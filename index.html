@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini E-Commerce Store | Dev Raj Gupta</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-name">DevGear Shop</span>
+        <span class="brand-tag">by Dev Raj Gupta</span>
+      </div>
+      <div class="header-actions">
+        <span class="delivery-pill">Free delivery on orders ₹500+</span>
+        <a href="#cart-section" class="cart-jump-btn" aria-label="Jump to shopping cart">
+          <span>Cart</span>
+          <span id="header-cart-count" class="cart-badge">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro-banner" aria-labelledby="shop-title">
+      <div>
+        <span class="eyebrow">Project 05 &middot; Mini E-Commerce App</span>
+        <h1 id="shop-title">Developer Workspace Essentials</h1>
+        <p class="subtitle">
+          Browse our catalog of 8 curated desk and coding essentials. Add items to your cart, adjust quantities, and preview your order with automatic INR currency and delivery calculation.
+        </p>
+      </div>
+      <div class="category-bar" role="group" aria-label="Filter products by category">
+        <button type="button" class="cat-btn active" data-category="All" aria-pressed="true">All (8)</button>
+        <button type="button" class="cat-btn" data-category="Stationery" aria-pressed="false">Stationery</button>
+        <button type="button" class="cat-btn" data-category="Desk Setup" aria-pressed="false">Desk Setup</button>
+        <button type="button" class="cat-btn" data-category="Cables & Power" aria-pressed="false">Cables &amp; Power</button>
+        <button type="button" class="cat-btn" data-category="Lighting" aria-pressed="false">Lighting</button>
+        <button type="button" class="cat-btn" data-category="Peripherals" aria-pressed="false">Peripherals</button>
+      </div>
+    </section>
+
+    <div id="order-feedback" class="order-feedback" role="status" aria-live="polite"></div>
+
+    <div class="shop-layout">
+      <!-- Catalogue Section (Rendered dynamically from const products = [...] in app.js) -->
+      <section class="catalog-section" aria-labelledby="catalog-heading">
+        <div class="section-head">
+          <h2 id="catalog-heading">Product Catalogue</h2>
+          <span id="catalog-count" class="meta-label">Showing 8 items</span>
+        </div>
+        <div id="catalog" class="product-grid"></div>
+      </section>
+
+      <!-- Shopping Cart Section -->
+      <aside id="cart-section" class="cart-panel" aria-labelledby="cart-heading">
+        <div class="cart-header">
+          <h2 id="cart-heading">Your Shopping Cart</h2>
+          <span id="cart-items-badge" class="items-pill">0 items</span>
+        </div>
+
+        <p id="empty-cart-msg" class="empty-cart-msg">
+          Your cart is currently empty. Click "Add to cart" on any product to begin building your order.
+        </p>
+
+        <div id="cart-table-wrap" class="cart-table-wrap" hidden>
+          <table class="cart-table" aria-label="Shopping cart items">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Qty</th>
+                <th scope="col" class="num-col">Line Total</th>
+                <th scope="col" class="action-col"><span class="sr-only">Remove</span></th>
+              </tr>
+            </thead>
+            <tbody id="cart-body"></tbody>
+          </table>
+        </div>
+
+        <div class="totals-box" aria-label="Order totals">
+          <div class="totals-row">
+            <span>Subtotal</span>
+            <span id="subtotal">₹0.00</span>
+          </div>
+          <div class="totals-row">
+            <span>Delivery Fee <small class="delivery-hint">(₹40 under ₹500)</small></span>
+            <span id="delivery">₹0.00</span>
+          </div>
+          <p id="delivery-note" class="delivery-status">Add items to calculate delivery.</p>
+          <div class="totals-row grand-row">
+            <span>Grand Total</span>
+            <span id="total">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="cart-actions">
+          <button type="button" id="checkout-btn" class="btn btn-primary" disabled>
+            Preview Checkout Order
+          </button>
+          <button type="button" id="clear-cart-btn" class="btn btn-outline" disabled>
+            Clear Cart
+          </button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Step 7: Checkout Preview Modal (<dialog> element clearly labeled as a demonstration) -->
+  <dialog id="checkout-modal" class="checkout-modal" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <span class="demo-badge">Demonstration Only &middot; No Payment Taken</span>
+          <h2 id="modal-title">Order Checkout Preview</h2>
+        </div>
+        <button type="button" id="close-modal-btn" class="icon-close-btn" aria-label="Close checkout preview">
+          &times;
+        </button>
+      </div>
+
+      <p class="demo-notice">
+        This checkout screen is a portfolio demonstration for Project 05. No real payment or card details are collected.
+      </p>
+
+      <div class="modal-table-wrap">
+        <table class="modal-table" aria-label="Order summary preview">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Qty</th>
+              <th scope="col" class="num-col">Unit Price</th>
+              <th scope="col" class="num-col">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="modal-items-body"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-totals">
+        <div class="totals-row">
+          <span>Order Subtotal</span>
+          <span id="modal-subtotal">₹0.00</span>
+        </div>
+        <div class="totals-row">
+          <span>Delivery Charge</span>
+          <span id="modal-delivery">₹0.00</span>
+        </div>
+        <div class="totals-row grand-row">
+          <span>Total Payable (Demo)</span>
+          <span id="modal-total">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="cancel-modal-btn" class="btn btn-outline">
+          Continue Shopping
+        </button>
+        <button type="button" id="confirm-demo-btn" class="btn btn-primary">
+          Confirm Demo Order
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <p>
+      Built by <strong>Dev Raj Gupta</strong> &middot; Project 05 Mini E-Commerce App &middot;
+      <a href="https://github.com/devrajgupta3953-alt" target="_blank" rel="noopener noreferrer">GitHub</a> &middot;
+      <a href="https://devrajgupta3953-alt.github.io/r-Personal-Portfolio-Landing-Page/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+    </p>
+  </footer>
+</body>
+</html>
